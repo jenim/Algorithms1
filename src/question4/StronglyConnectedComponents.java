@@ -1,9 +1,7 @@
 package question4;
 
-//import static common.utils.Utils.readMap;
+import static common.utils.Utils.readMap;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import org.apache.commons.io.FileUtils;
 
 public class StronglyConnectedComponents {
 	
@@ -52,55 +48,18 @@ public class StronglyConnectedComponents {
 			System.out.println(i+":"+leader);
 		}
 		List<Integer>res=Arrays.asList(scc.leaders);
-		for(int i=0;i<res.size();i++){
-			System.out.println(i+":"+res.get(i));
-		}
 		Collections.sort(res);
 		for(int i=0;i<res.size();i++){
 			System.out.println(i+":"+res.get(i));
 		}
-		//434821,968,459,313,211
 	}
 	
 	private void setExploredToNull() {
-		for(Integer i:vertecies.keySet()){//Set<Map.Entry<K,V>> entrySet()
+		for(Integer i:vertecies.keySet()){
 			vertecies.get(i).explored=false;
 		}
 	}
 
-	private void computeLeaders() {
-		leaders=new Integer[vertecies.size()+1];
-		for(int i=0;i<leaders.length;i++){
-			leaders[i]=new Integer(0);
-		}
-		for(int i=vertexNumber;i>=1;i--){
-			Vertex v=vertecies.get(i);
-			if(!v.explored){
-				s=i;
-				dfs2ndPass(finishingTimesGraph,i);
-			}
-		}
-	}
-
-	private void dfs2ndPass(Map<Integer, List<Integer>> graph,int i) {
-		Vertex v=vertecies.get(i);
-		v.explored=true;
-		v.leaderLabel=s;
-
-		Integer currentNum=leaders[s];
-		leaders[s]=++currentNum;
-
-		List<Integer> heads=graph.get(i);
-		if(heads!=null){
-			for(Integer head:heads){
-				v=vertecies.get(head);
-				if(!v.explored){
-					dfs2ndPass(graph,head);
-				}
-			}
-		}
-	}
-	
 	private void computeLeadersNonRecursiveDfs() {
 		leaders=new Integer[vertecies.size()+1];
 		for(int i=0;i<leaders.length;i++){
@@ -116,7 +75,6 @@ public class StronglyConnectedComponents {
 			}
 			while(!stack.isEmpty()){
 				nextVertex=stack.pop();
-//				nextVertex.explored=true;
 				nextVertex.leaderLabel=s;
 				
 				Integer currentNum=leaders[s];
@@ -142,13 +100,11 @@ public class StronglyConnectedComponents {
 		Set<Integer> tails=inputGraph.keySet();
 		for(Integer tail:tails){
 			List<Integer> heads=inputGraph.get(tail);
-//			System.out.println(">old:"+tail+"-"+heads);
 			int newTail=vertecies.get(tail).finishingTime;
 			List<Integer> newHeads=new ArrayList<Integer>(heads.size());
 			for(Integer head:heads){
 				newHeads.add(vertecies.get(head).finishingTime);
 			}
-//			System.out.println(">>new:"+newTail+"-"+newHeads);
 			if(!finishingTimesGraph.containsKey(newTail)){
 				finishingTimesGraph.put(newTail, newHeads);
 			}
@@ -204,9 +160,6 @@ public class StronglyConnectedComponents {
 					heads.add(head);
 				}
 			}
-			/*printGraph(output);
-			System.out.println("Vertecies:");
-			printMap(vertecies);*/
 			return output;
 		}
 		
@@ -268,18 +221,6 @@ public class StronglyConnectedComponents {
 		}
 		t++;
 		vertecies.get(i).finishingTime=t;
-		System.out.println("i="+i+" "+t+"    v-"+vertecies.get(i).finishingTime);
-	}
-
-	private List<String> readMap(String fileName) {
-		try {
-			List<String>res=FileUtils.readLines(new File(fileName));
-			return res;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	private void printGraph(Map<Integer, List<Integer>> output) {
@@ -300,12 +241,6 @@ public class StronglyConnectedComponents {
 		}
 	}
 
-	private void printList(List<Vertex> values) {
-		for(Vertex v:values){
-			System.out.print("["+v.label+","+v.finishingTime+"],");
-		}
-	}
-	
 	boolean contains(List<Vertex> list, int label){
 		for(Vertex v:list){
 			if(v.label==label){
@@ -313,12 +248,6 @@ public class StronglyConnectedComponents {
 			}
 		}
 		return false;
-	}
-	
-	private void addVertexToList(List<Vertex> list, int vertexLabel){
-		if(!contains(list, vertexLabel)){
-			list.add(new Vertex(vertexLabel, false, 0, 0));
-		}
 	}
 	
 	private void addVertexToMap(Map<Integer,Vertex> map, int vertexLabel){
