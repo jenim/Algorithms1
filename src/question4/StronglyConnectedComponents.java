@@ -49,9 +49,7 @@ public class StronglyConnectedComponents {
 		}
 		List<Integer>res=Arrays.asList(scc.leaders);
 		Collections.sort(res);
-		for(int i=0;i<res.size();i++){
-			System.out.println(i+":"+res.get(i));
-		}
+		System.out.println("result:"+res.get(res.size()-1));
 	}
 	
 	private void setExploredToNull() {
